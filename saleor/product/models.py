@@ -470,3 +470,13 @@ class VariantImage(models.Model):
             'Variant image model', 'variant image')
         verbose_name_plural = pgettext_lazy(
             'Variant image model', 'variant images')
+
+
+@python_2_unicode_compatible
+class Collection(models.Model):
+    name = models.CharField(
+        pgettext_lazy('Collection field', 'name'), max_length=128)
+    products = models.ManyToManyField(Product)
+
+    def __str__(self):
+        return self.name
