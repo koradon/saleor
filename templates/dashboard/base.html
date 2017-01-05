@@ -106,6 +106,11 @@
                   {% trans "Stock locations" context "Dashboard stock loactions list" %}
                   </a>
                 </li>
+                <li class="{% block menu_collections_class %}{% endblock %}">
+                  <a href="{% url 'dashboard:collection-list' %}">
+                    {% trans "Collections" context "Dashboard side navigation link" %}
+                  </a>
+                </li>
               </ul>
             </li>
             <li class="side-nav-section">
