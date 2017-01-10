@@ -11,6 +11,8 @@ from django.template.response import TemplateResponse
 from ..cart.utils import set_cart_cookie
 from ..core.utils import serialize_decimal
 from .models import Category
+from ..core.utils import get_paginator_items
+from .models import Category, Collection
 from .utils import (products_with_details, products_for_cart,
                     handle_cart_form, get_availability,
                     get_product_images, get_variant_picker_data,
@@ -117,3 +119,15 @@ def category_index(request, path, category_id):
                         category_id=category_id)
     return TemplateResponse(request, 'category/index.html',
                             {'category': category})
+
+
+def collection_index(request, slug, collection_id):
+    collection = get_object_or_404(Collection, pk=collection_id)
+    actuall_slug = collection.slug
+    if actuall_slug != slug:
+        return redirect('product:collection', permanent=True,
+                        slug=actuall_slug, collection_id=collection_id)
+    products = collection.products.get_available_products()
+    products = products.prefetch_related('images')
+    ctx = {'collection': collection, 'products': products}
+    return TemplateResponse(request, 'collection/index.html', ctx)
