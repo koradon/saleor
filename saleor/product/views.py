@@ -127,7 +127,13 @@ def collection_index(request, slug, collection_id):
     if actuall_slug != slug:
         return redirect('product:collection', permanent=True,
                         slug=actuall_slug, collection_id=collection_id)
-    products = collection.products.get_available_products()
+    products = collection.products.all()
     products = products.prefetch_related('images')
-    ctx = {'collection': collection, 'products': products}
+    products_page = get_paginator_items(
+        products, settings.PAGINATE_BY, request.GET.get('page'))
+    products = products_with_availability(
+        products_page, discounts=request.discounts,
+        local_currency=request.currency)
+    ctx = {'collection': collection, 'products': products,
+           'products_page': products_page}
     return TemplateResponse(request, 'collection/index.html', ctx)
