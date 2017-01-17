@@ -4,14 +4,15 @@ import datetime
 import json
 
 from django.core.urlresolvers import reverse
+from django.conf import settings
 from django.http import HttpResponsePermanentRedirect, JsonResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 
 from ..cart.utils import set_cart_cookie
 from ..core.utils import serialize_decimal
-from .models import Category
 from ..core.utils import get_paginator_items
+from .utils import products_with_availability
 from .models import Category, Collection
 from .utils import (products_with_details, products_for_cart,
                     handle_cart_form, get_availability,
