@@ -10,11 +10,12 @@ from django.template.response import TemplateResponse
 
 from ..cart.utils import set_cart_cookie
 from ..core.utils import serialize_decimal
-from .models import Category
+from .models import Category, Product
 from .utils import (products_with_details, products_for_cart,
                     handle_cart_form, get_availability,
                     get_product_images, get_variant_picker_data,
-                    get_product_attributes_data, product_json_ld)
+                    get_product_attributes_data, products_with_availability,
+                    product_json_ld)
 
 
 def product_details(request, slug, product_id, form=None):
@@ -117,3 +118,15 @@ def category_index(request, path, category_id):
                         category_id=category_id)
     return TemplateResponse(request, 'category/index.html',
                             {'category': category})
+
+
+def products_from_collections(request, product_id):
+    related_products = Product.objects.prefetch_related(
+        'collections', 'images').filter(
+        collections__products__id=product_id).exclude(
+        id=product_id).distinct()
+    products = products_with_availability(related_products,
+                                          discounts=request.discounts,
+                                          local_currency=request.currency)
+    ctx = {'products': products}
+    return TemplateResponse(request, 'product/_product_collections.html', ctx)

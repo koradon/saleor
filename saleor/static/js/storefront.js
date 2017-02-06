@@ -373,3 +373,6 @@ if ($.cookie('alert') === 'true') {
 $closeMsg.on('click', (e) => {
   $removeProductSucces.addClass('hidden-xs-up');
 });
+
+let $collections = $('#collections');
+$collections.load($collections.data('url'));
