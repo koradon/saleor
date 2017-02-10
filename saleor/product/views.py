@@ -2,6 +2,7 @@ from __future__ import unicode_literals
 
 import datetime
 import json
+from random import randint, shuffle
 
 from django.core.urlresolvers import reverse
 from django.http import HttpResponsePermanentRedirect, JsonResponse
@@ -14,8 +15,7 @@ from .models import Category, Product
 from .utils import (products_with_details, products_for_cart,
                     handle_cart_form, get_availability,
                     get_product_images, get_variant_picker_data,
-                    get_product_attributes_data, products_with_availability,
-                    product_json_ld)
+                    get_product_attributes_data, product_json_ld)
 
 
 def product_details(request, slug, product_id, form=None):
@@ -124,6 +124,9 @@ def products_from_collections(request, product_id):
     products = Product.objects.prefetch_related(
         'collections', 'images').filter(
         collections__products__id=product_id).exclude(
-        id=product_id).distinct()[:6]
-    ctx = {'products': products}
+        id=product_id).distinct()
+    products_count = products.count()
+    index = randint(0, products_count - 6)
+
+    ctx = {'products': products[index:index + 6]}
     return TemplateResponse(request, 'product/_product_collections.html', ctx)
