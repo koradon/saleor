@@ -7,7 +7,7 @@ from django.core.urlresolvers import reverse
 
 from ..core.utils import build_absolute_uri
 from ..site.utils import get_site_settings_from_request
-from ..product.models import Category, Collection
+from ..product.models import Category
 
 
 def get_setting_as_dict(name, short_name=None):
@@ -32,10 +32,6 @@ def categories(request):
 
 def search_enabled(request):
     return {'SEARCH_IS_ENABLED': bool(settings.SEARCH_BACKENDS)}
-
-
-def collections(request):
-    return {'collections': Collection.objects.all()}
 
 
 def webpage_schema(request):
